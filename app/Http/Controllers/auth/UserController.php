@@ -58,7 +58,6 @@ class UserController extends Controller
                 'errors' => $validate->errors(),
             ], 422);
         }
-
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;

@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Category name
-            $table->text('description')->nullable(); // Category description (nullable if not always needed)
+            $table->string('user_id') -> references('id') -> on('users');
+            $table->string('quantity');
+            $table->string('total');
+            $table->string('uCode'); // unique code
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('orders');
     }
 };

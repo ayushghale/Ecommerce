@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\auth\LoginRegisterController;
 
 
 /*
@@ -29,7 +30,7 @@ Route::get('/test', function () {
 });
 
 
-Route::post('/login', [UserController::class, 'userData'])->name('user.index'); // Display all users
+Route::post('/login', [LoginRegisterController::class, 'userLogin'])->name('user.index'); // Display all users
 
 
 // User routes
