@@ -30,13 +30,13 @@ class LoginRegisterController extends Controller
 
         $user = User::where('email', '=', $request->email)->first();
 
-        
+
         try {
             // dd($user);
 
             if (Hash::check($request->password, $user->password)) {
 
-                
+
 
                 $token = $user->createToken('authToken')->plainTextToken;
 

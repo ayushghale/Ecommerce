@@ -54,19 +54,19 @@ Route::prefix('admin')->group(function () {
 // Category routes
 Route::prefix('category')->group(function () {
     Route::get('/allcategory', [CategoryController::class, 'categoryData'])->name('category.index'); // Display all categories
-    Route::get('/{id}', [CategoryController::class, 'showCategoryById'])->name('category.showCategoryById'); // Display category by their id
     Route::post('/create', [CategoryController::class, 'store'])->name('category.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [CategoryController::class, 'update'])->name('category.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [CategoryController::class, 'destroy'])->name('category.destroy'); // Remove the specified resource from storage
+    Route::get('/{id}', [CategoryController::class, 'showCategoryById'])->name('category.showCategoryById'); // Display category by their id
 });
 
 // Product routes
 Route::prefix('product')->group(function () {
     Route::get('/allproduct', [ProductController::class, 'productData'])->name('product.index'); // Display all products
-    Route::get('/{id}', [ProductController::class, 'showProductById'])->name('product.showProductById'); // Display product by their id
     Route::post('/create', [ProductController::class, 'store'])->name('product.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [ProductController::class, 'update'])->name('product.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [ProductController::class, 'destroy'])->name('product.destroy'); // Remove the specified resource from storage
+    Route::get('/{id}', [ProductController::class, 'showProductById'])->name('product.showProductById'); // Display product by their id
 });
 
 // Order routes

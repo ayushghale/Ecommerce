@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('user_id') -> references('id') -> on('users');
             $table->string('product_id') -> references('id') -> on('products');
+            $table->string('quantity');
             $table->timestamps();
         });
     }

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('user_id') -> references('id') -> on('users');
-            $table->string('quantity');
             $table->string('total');
             $table->string('uCode'); // unique code
             $table->string('status')->default('pending');
