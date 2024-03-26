@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('product_id') -> references('id') -> on('products');
             $table->string('user_id') -> references('id') -> on('users');
-            $table->string('rating');
+            $table->integer('rating');
             $table->string('review');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
         });

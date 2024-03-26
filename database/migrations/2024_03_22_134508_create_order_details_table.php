@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('order_id') -> references('id') -> on('orders');
             $table->string('product_id') -> references('id') -> on('products');
-            $table->string('quantity');
-            $table->string('total');
+            $table->integer('quantity');
+            $table->double('total');
             $table->string('uCode'); // unique code
-            $table->string('status');
+            $table->string('status') -> default('pending');
             $table->timestamps();
         });
     }

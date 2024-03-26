@@ -22,10 +22,11 @@
 -- User table
     id
     name
-    email
     image
+    email
+    location
+    contact_number
     password
-    role
     created_at
     updated_at
 

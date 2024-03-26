@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function userData()
     {
-        $users = User::all();
+        $users = DB::table('users')->where('role', 0)->get();
         return response()->json($users);
     }
 
@@ -27,14 +27,6 @@ class UserController extends Controller
     {
         $user = User::find($id);
         return response()->json($user);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-
     }
 
     /**
@@ -64,6 +56,14 @@ class UserController extends Controller
         $user->location = $request->location;
         $user->contact_number = $request->contact_number;
         $user->password = bcrypt($request->password);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $new_image = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+            $image->move('site/uploads/user/', $new_image);
+            $save_url = '/site/uploads/user/' . $new_image;
+            $user->image = $save_url;
+        }
         $user->save();
 
         return response()->json([
@@ -71,22 +71,6 @@ class UserController extends Controller
             'message' => 'User registered successfully',
             'data' => $user,
         ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**

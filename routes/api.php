@@ -11,6 +11,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\auth\LoginRegisterController;
+use App\Http\Middleware\UserTokenIsValid;
 
 
 /*
@@ -30,12 +31,25 @@ Route::get('/test', function () {
 });
 
 
-Route::post('/login', [LoginRegisterController::class, 'userLogin'])->name('user.index'); // Display all users
+Route::post('/login', [LoginRegisterController::class, 'login'])->name('index'); // Display all users
+// Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
+Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('Register');
+
+Route::middleware([UserTokenIsValid::class])->group(function () {
+    Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
+});
+
 
 
 // User routes
 Route::prefix('user')->group(function () {
-    Route::get('/alluser', [UserController::class, 'userData'])->name('user.index'); // Display all users
+    Route::middleware([UserTokenIsValid::class])->group(function () {
+        Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
+        Route::get('/alluser', [UserController::class, 'userData'])->name('user.index'); // Display all users
+    });
+
+
+
     Route::get('/{id}', [UserController::class, 'showUserById'])->name('user.showUserById'); // Display user by their id
     Route::post('/create', [UserController::class, 'store'])->name('user.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [UserController::class, 'update'])->name('user.update'); // Update the specified resource in storage
@@ -76,6 +90,7 @@ Route::prefix('order')->group(function () {
     Route::post('/create', [OrderController::class, 'store'])->name('order.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [OrderController::class, 'update'])->name('order.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [OrderController::class, 'destroy'])->name('order.destroy'); // Remove the specified resource from storage
+    Route::get('/user/{id}', [OrderController::class, 'showOrderByUserId'])->name('order.showOrderByUserId'); // Display order by user id
 });
 
 // Cart routes
@@ -91,8 +106,8 @@ Route::prefix('cart')->group(function () {
 Route::prefix('payment')->group(function () {
     Route::get('/allpayment', [PaymentController::class, 'paymentData'])->name('payment.index'); // Display all payments
     Route::get('/{id}', [PaymentController::class, 'showPaymentById'])->name('payment.showPaymentById'); // Display payment by their id
-    Route::post('/create', [PaymentController::class, 'store'])->name('payment.create'); // Store a newly created resource in storage
-    Route::post('/update/{id}', [PaymentController::class, 'update'])->name('payment.update'); // Update the specified resource in storage
+    Route::post('/updateStatus/{id}', [PaymentController::class, 'update'])->name('payment.update'); // Update the specified resource in storage
+    Route::get('/paymentByStatus/{id}/{status}', [PaymentController::class, 'showPaymentByUserId'])->name('payment.showPaymentByUserId'); // Update the specified resource in storage
     Route::get('/delete/{id}', [PaymentController::class, 'destroy'])->name('payment.destroy'); // Remove the specified resource from storage
 });
 
@@ -103,6 +118,8 @@ Route::prefix('review')->group(function () {
     Route::post('/create', [ReviewController::class, 'store'])->name('review.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [ReviewController::class, 'update'])->name('review.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [ReviewController::class, 'destroy'])->name('review.destroy'); // Remove the specified resource from storage
+    Route::get('/user/{id}', [ReviewController::class, 'showReviewByUserId'])->name('review.showReviewByUserId'); // Display review by user id
+
 });
 
 

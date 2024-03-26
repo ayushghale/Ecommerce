@@ -2,64 +2,59 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
+use DB;
 
 class OrderDetailController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public static function store(int $user_id, int $order_id, string $uCode)
     {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(OrderDetail $orderDetail)
-    {
-        //
-    }
+        if ($order_id == null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order details already exist',
+            ], 400);
+        } else {
+            // dd($user_id, $order_id);
+            $cartData = DB::table('carts')
+                ->join('products', 'carts.product_id', '=', 'products.id')
+                ->select('carts.*', 'products.price as product_price', 'products.id as product_id')
+                ->where('carts.user_id', $user_id)
+                ->get();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(OrderDetail $orderDetail)
-    {
-        //
-    }
+            // dd($user_id, $order_id, $uCode, $cartData);
+            foreach ($cartData as $cart) {
+                $product_id = intval($cart->product_id);
+                $quantity = intval($cart->quantity);
+                $price = intval($cart->product_price);
+                $total_Price = $price * $quantity;
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, OrderDetail $orderDetail)
-    {
-        //
-    }
+                // Ensure $order_id is accessible within the loop
+                // dd($order_id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(OrderDetail $orderDetail)
-    {
-        //
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order_id; // Assign $order_id to order_id field
+                $orderDetail->product_id = $product_id; // Corrected variable name
+                $orderDetail->quantity = $quantity;
+                $orderDetail->total = $total_Price; // Use the calculated total price
+                $orderDetail->uCode = $uCode;
+                $orderDetail->save();
+                // dd($orderDetail); // Debug if needed
+            }
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order details created',
+            ], 200);
+
+        }
+
     }
 }

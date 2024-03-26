@@ -61,6 +61,7 @@ class CartController extends Controller
         $validate = Validator::make($request->all(), [
             'user_id' => 'required | integer | exists:users,id',
             'product_id' => 'required  | integer | exists:products,id',
+            'quantity' => 'required | integer | min:1'
         ]);
         if ($validate->fails()) {
             // Return JSON response with errors and HTTP status code 422 (Unprocessable Entity)
@@ -74,6 +75,7 @@ class CartController extends Controller
         $cart = new Cart();
         $cart->user_id = $request->user_id;
         $cart->product_id = $request->product_id;
+        $cart->quantity = $request->quantity;
         $cart->save();
 
         return response()->json([

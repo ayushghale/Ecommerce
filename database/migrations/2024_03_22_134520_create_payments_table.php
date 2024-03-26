@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('order_id') -> references('id') -> on('orders');
+            $table->string('user_id') -> references('id') -> on('users');
             $table->string('payment_method');
-            $table->string('payment_status');
-            $table->string('payment_amount');
-            $table->string('payment_ref');
-            $table->string('transactionCode');
+            $table->double('payment_amount');
+            $table->string('transactionCode')->nullable();
+            $table->string('payment_status') -> default('pending');
             $table->timestamps();
         });
     }
