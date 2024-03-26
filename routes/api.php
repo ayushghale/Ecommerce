@@ -32,12 +32,12 @@ Route::get('/test', function () {
 
 
 Route::post('/login', [LoginRegisterController::class, 'login'])->name('index'); // Display all users
-// Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
+Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
 Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('Register');
 
-Route::middleware([UserTokenIsValid::class])->group(function () {
-    Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
-});
+// Route::middleware([UserTokenIsValid::class])->group(function () {
+//     Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
+// });
 
 
 
