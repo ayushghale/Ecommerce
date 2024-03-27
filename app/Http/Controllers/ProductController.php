@@ -26,6 +26,27 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function showProductByCategoryId($id)
+    {
+        if (Product::where('category_id', $id)->doesntExist()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found',
+                'data' => null
+            ], 404);
+        }else{
+            $product = DB::table('products')
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->select('products.*', 'categories.name as category_name')
+                ->where('products.category_id', $id)
+                ->get();
+            return response()->json([
+                'success' => true,
+                'message' => 'Product found',
+                'data' => $product
+            ], 200);
+        }
+    }
 
     /**
      * Display a listing of the resource.

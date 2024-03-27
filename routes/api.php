@@ -76,6 +76,9 @@ Route::prefix('product')->group(function () {
     Route::post('/update/{id}', [ProductController::class, 'update'])->name('product.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [ProductController::class, 'destroy'])->name('product.destroy'); // Remove the specified resource from storage
     Route::get('/{id}', [ProductController::class, 'showProductById'])->name('product.showProductById'); // Display product by their id
+
+
+    Route::get('/category/{id}', [ProductController::class, 'showProductByCategoryId'])->name('product.showProductByCategoryId'); // Display product by category id
 });
 
 // Order routes
@@ -83,8 +86,8 @@ Route::prefix('order')->group(function () {
     Route::get('/allorder', [OrderController::class, 'orderData'])->name('order.index'); // Display all orders
     Route::get('/{id}', [OrderController::class, 'showOrderById'])->name('order.showOrderById'); // Display order by their id
     Route::post('/create', [OrderController::class, 'store'])->name('order.create'); // Store a newly created resource in storage
-    Route::post('/update/{id}', [OrderController::class, 'update'])->name('order.update'); // Update the specified resource in storage
-    Route::get('/delete/{id}', [OrderController::class, 'destroy'])->name('order.destroy'); // Remove the specified resource from storage
+
+
     Route::get('/user/{id}', [OrderController::class, 'showOrderByUserId'])->name('order.showOrderByUserId'); // Display order by user id
 });
 
@@ -95,6 +98,11 @@ Route::prefix('cart')->group(function () {
     Route::post('/create', [CartController::class, 'store'])->name('cart.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [CartController::class, 'update'])->name('cart.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [CartController::class, 'destroy'])->name('cart.destroy'); // Remove the specified resource from storage
+
+
+    Route::get('/user/{id}', [CartController::class, 'showCartByUserId'])->name('cart.showCartByUserId'); // Display cart by user id
+    Route::get('/increaseQuantity/{userId}/{productId}', [CartController::class, 'increaseQuantity'])->name('cart.increaseQuantity'); // increase cart quantity by user id and product id
+    Route::get('/decreaseQuantity/{userId}/{productId}', [CartController::class, 'decreaseQuantity'])->name('cart.decreaseQuantity'); // decrease cart quantity by user id and product id
 });
 
 // Payment routes
@@ -103,7 +111,7 @@ Route::prefix('payment')->group(function () {
     Route::get('/{id}', [PaymentController::class, 'showPaymentById'])->name('payment.showPaymentById'); // Display payment by their id
     Route::post('/updateStatus/{id}', [PaymentController::class, 'update'])->name('payment.update'); // Update the specified resource in storage
     Route::get('/paymentByStatus/{id}/{status}', [PaymentController::class, 'showPaymentByUserId'])->name('payment.showPaymentByUserId'); // Update the specified resource in storage
-    Route::get('/delete/{id}', [PaymentController::class, 'destroy'])->name('payment.destroy'); // Remove the specified resource from storage
+
 });
 
 // Review routes
@@ -114,7 +122,6 @@ Route::prefix('review')->group(function () {
     Route::post('/update/{id}', [ReviewController::class, 'update'])->name('review.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [ReviewController::class, 'destroy'])->name('review.destroy'); // Remove the specified resource from storage
     Route::get('/user/{id}', [ReviewController::class, 'showReviewByUserId'])->name('review.showReviewByUserId'); // Display review by user id
-
 });
 
 

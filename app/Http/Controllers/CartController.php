@@ -27,6 +27,55 @@ class CartController extends Controller
 
     }
 
+    public function showCartByUserId($id)
+    {
+        if (Cart::where('user_id', $id)->doesntExist()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart not found',
+                'data' => null
+            ], 404);
+        }else{
+            $cart = DB::table('carts')
+                ->join('products', 'carts.product_id', '=', 'products.id')
+                ->join('users', 'carts.user_id', '=', 'users.id')
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->select('carts.*', 'products.name as product_name', 'users.name as user_name', 'products.price', 'categories.name as category_name')
+                ->where('carts.user_id', $id)
+                ->get();
+
+            $total_price = 0;
+            foreach ($cart as $item) {
+                $total_price += $item->price * $item->quantity;
+            }
+
+            $productData = [];
+            foreach ($cart as $item) {
+                $productData[] = [
+                    'cart_id' => $item->id,
+                    'category_name' => $item->category_name,
+                    'product_id' => $item->product_id,
+                    'product_name' => $item->product_name,
+                    'quantity' => $item->quantity,
+                    'price' => $item->price,
+                    'total_price' => $item->price * $item->quantity
+                ];
+            }
+
+            $data = [
+                'user_id' => $id,
+                'product_data' => $productData,
+                'total_price' => $total_price
+            ];
+            dd($data);
+            return response()->json([
+                'success' => true,
+                'message' => 'Cart found',
+                'data' => $data
+            ], 200);
+        }
+    }
+
     /**
      * Show cart data by their id.
      */
@@ -84,23 +133,6 @@ class CartController extends Controller
             'data' => $cart
         ], 201);
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cart $cart)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cart $cart)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      */
@@ -152,4 +184,51 @@ class CartController extends Controller
             ], 200);
         }
     }
+
+    /**
+     * increment the quantity of the specified resource in storage.
+     */
+    public function increaseQuantity($user_id, $product_id)
+    {
+        $cart = Cart::where('user_id', $user_id)->where('product_id', $product_id)->first();
+        if (!$cart || $cart->quantity == 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart not found',
+                'data' => null
+            ], 404);
+        }
+        $cart->quantity = $cart->quantity + 1;
+        $cart->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Cart updated',
+            'data' => $cart
+        ], 200);
+    }
+
+    /**
+     * decrement the quantity of the specified resource in storage.
+     */
+    public function decreaseQuantity($user_id, $product_id)
+    {
+        $cart = Cart::where('user_id', $user_id)->where('product_id', $product_id)->first();
+
+        if (!$cart || $cart->quantity <= 1) {
+            return response()->json([
+                'success' => false,
+                'message' =>'Cart not found',
+                'data' => null
+            ], 404);
+        }
+        $cart->quantity = $cart->quantity - 1;
+        $cart->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Cart updated',
+            'data' => $cart
+        ], 200);
+    }
+
+
 }
