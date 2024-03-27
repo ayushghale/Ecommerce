@@ -31,9 +31,9 @@ Route::get('/test', function () {
 });
 
 
-Route::post('/login', [LoginRegisterController::class, 'login'])->name('index'); // Display all users
+Route::post('/login', [LoginRegisterController::class, 'login'])->name('login'); // Display all users
 Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
-Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('Register');
+Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('logout');
 
 // Route::middleware([UserTokenIsValid::class])->group(function () {
 //     Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
@@ -43,13 +43,8 @@ Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('R
 
 // User routes
 Route::prefix('user')->group(function () {
-    Route::middleware([UserTokenIsValid::class])->group(function () {
-        Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
-        Route::get('/alluser', [UserController::class, 'userData'])->name('user.index'); // Display all users
-    });
-
-
-
+    Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
+    Route::get('/alluser', [UserController::class, 'userData'])->name('user.index'); // Display all users
     Route::get('/{id}', [UserController::class, 'showUserById'])->name('user.showUserById'); // Display user by their id
     Route::post('/create', [UserController::class, 'store'])->name('user.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [UserController::class, 'update'])->name('user.update'); // Update the specified resource in storage
