@@ -80,6 +80,8 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
+        // find user name by id
+        $userdata  = User::where('id', $id)->first();
         $validate = Validator::make($request->all(), [
             'name' => 'required',
             'contact_number' => [
