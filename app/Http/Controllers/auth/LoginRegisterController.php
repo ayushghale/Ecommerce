@@ -35,7 +35,7 @@ class LoginRegisterController extends Controller
                 // dd('admin');
                 if (Hash::check($request->password, $UserData->password)) {
 
-                    $token = $UserData->createToken('authToken', $UserData->id)->plainTextToken;
+                    $token = $UserData->createToken('authToken', $UserData->id);
                     // dd($token);
 
                     return response()->json([
@@ -54,7 +54,7 @@ class LoginRegisterController extends Controller
             } elseif ($UserData->role === 0) {
                 // dd('staff');
                 if (Hash::check($request->password, $UserData->password)) {
-                    $token = $UserData->createToken('authToken', $UserData->id)->plainTextToken;
+                    $token = $UserData->createToken('authToken', $UserData->id);
                     return response()->json([
                         'success' => true,
                         'message' => 'User dashboard loged in',

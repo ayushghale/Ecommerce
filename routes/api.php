@@ -36,7 +36,7 @@ Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Re
 Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('logout');
 
 // Route::middleware([UserTokenIsValid::class])->group(function () {
-//     Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
+//     Route::get('/alluser', [UserController::class, 'userData'])->name('user.index'); // Display all users
 // });
 
 
