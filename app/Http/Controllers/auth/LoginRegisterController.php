@@ -24,9 +24,14 @@ class LoginRegisterController extends Controller
         try {
             $UserData = User::where('email', '=', $inputEmail)->first();
 
-            $adminType = $UserData->role;
+            if (!$UserData) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User No Account Found for this Email',
+                ], 404);
+            }
 
-            if ($adminType === 1) {
+            if ($UserData->role === 1) {
                 // dd('admin');
                 if (Hash::check($request->password, $UserData->password)) {
 
@@ -39,14 +44,14 @@ class LoginRegisterController extends Controller
                         'data' => $UserData,
                         'token' => $token,
                         'session' => session()->get('adminLogedIn')
-                    ]);
+                    ], 200);
                 } else {
                     return response()->json([
                         'success' => false,
                         'message' => 'user incorrect password',
-                    ]);
+                    ], 401);
                 }
-            } elseif ($adminType === 0) {
+            } elseif ($UserData->role === 0) {
                 // dd('staff');
                 if (Hash::check($request->password, $UserData->password)) {
                     $token = $UserData->createToken('authToken', $UserData->id)->plainTextToken;
@@ -56,25 +61,25 @@ class LoginRegisterController extends Controller
                         'data' => $UserData,
                         'token' => $token,
                         'session' => session()->get('user')
-                    ]);
+                    ], 200);
                 } else {
                     return response()->json([
                         'success' => false,
                         'message' => 'user incorrect password',
-                    ]);
+                    ], 401);
                 }
             } else {
                 return response()->json([
                     'success' => true,
                     'message' => 'User No Account Found for this Email',
-                ]);
+                ], 404);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'user not login',
                 'error' => $e->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
