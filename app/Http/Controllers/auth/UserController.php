@@ -78,21 +78,8 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $user = User::find($id);
-
-        // find user name by id
-        $userdata  = User::where('id', $id)->first();
         $validate = Validator::make($request->all(), [
-            'name' => 'required',
-            'contact_number' => [
-                'required',
-                'min:10',
-                Rule::unique('users')->ignore($user->id), // Ignore the current user while checking uniqueness
-            ],
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'required|same:conform_password',
-            'conform_password' => 'required|same:password',
-            'location' => 'required',
+            'contact_number' => 'required | min:10',
         ]);
 
         if ($validate->fails()) {
@@ -105,17 +92,32 @@ class UserController extends Controller
         }
 
         // Update user information
-        $user->name = $request->name;
-        $user->contact_number = $request->contact_number;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->location = $request->location;
+        $user = User::find($id);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $new_image = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+            $image->move('site/uploads/user/', $new_image);
+            $save_url = '/site/uploads/user/' . $new_image;
+            $user->image = $save_url;
+        }
+        if ($request->name) {
+            $user->name = $request->name;
+        }
+        if ($request->email) {
+            $user->email = $request->email;
+        }
+        if ($request->location) {
+            $user->location = $request->location;
+        }
+        if ($request->contact_number) {
+            $user->contact_number = $request->contact_number;
+        }
         $user->save();
 
         return response()->json([
             'success' => true,
             'message' => 'User updated successfully',
-            'data' => $user,
         ], 200);
     }
 
