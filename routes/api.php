@@ -12,6 +12,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\auth\LoginRegisterController;
 use App\Http\Middleware\UserTokenIsValid;
+use App\Http\Controllers\FavoriteController;
 
 
 /*
@@ -31,13 +32,19 @@ Route::get('/test', function () {
 });
 
 
-Route::post('/login', [LoginRegisterController::class, 'login'])->name('login'); // Display all users
-Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');
-Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('logout');
+Route::post('/login', [LoginRegisterController::class, 'login'])->name('login');// Login
+Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Register');// Register
+
+Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('logout'); // Logout
 
 // Route::middleware([UserTokenIsValid::class])->group(function () {
 //     Route::get('/alluser', [UserController::class, 'userData'])->name('user.index'); // Display all users
 // });
+
+
+
+
+
 
 
 
@@ -49,6 +56,14 @@ Route::prefix('user')->group(function () {
     Route::post('/create', [UserController::class, 'store'])->name('user.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [UserController::class, 'update'])->name('user.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy'); // Remove the specified resource from storage
+
+
+    // otp routes
+
+
+
+
+
 });
 
 // Admin routes
@@ -124,6 +139,12 @@ Route::prefix('review')->group(function () {
     Route::get('/user/{id}', [ReviewController::class, 'showReviewByUserId'])->name('review.showReviewByUserId'); // Display review by user id
 });
 
+// favorite routes
+Route::prefix('favorite')->group(function () {
+    Route::get('/user/{id}', [FavoriteController::class, 'showFavoritesByUserId'])->name('favorite.showFavoritesByUserId'); // Display favorite by user id
+    Route::get('/add/{UserId}/{productId}', [FavoriteController::class, 'addProductToFavorites'])->name('favorite.addProductToFavorites'); // add product to favorite
+    Route::get('/remove/{UserId}/{productId}', [FavoriteController::class, 'removeProductFromFavorites'])->name('favorite.removeProductFromFavorites'); // remove product from favorite
+});
 
 
 

@@ -15,15 +15,29 @@ class ProductController extends Controller
      */
     public function productData()
     {
-        $products = DB::table('products')
-            ->join('categories', 'products.category_id', '=', 'categories.id')
-            ->select('products.*', 'categories.name as category_name')
-            ->get();
+        $userId = 0;
+
+        if($userId == null){
+            $products = DB::table('products')
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->select('products.*', 'categories.name as category_name')
+                ->get();
+        }else{
+            $products = DB::table('products')
+                ->join('categories', 'products.category_id', '=', 'categories.id')
+                ->leftJoin('favorites', function ($join) use ($userId) {
+                    $join->on('products.id', '=', 'favorites.product_id')
+                        ->where('favorites.user_id', '=', $userId);
+                })
+                ->select('products.*', 'categories.name as category_name', 'favorites.user_id as favorite_user_id')
+                ->get();
+        }
         return response()->json([
             'success' => true,
-            'message' => 'Product found',
+            'message' => 'Products found',
             'data' => $products
         ], 200);
+
     }
 
     public function showProductByCategoryId($id)
@@ -34,7 +48,7 @@ class ProductController extends Controller
                 'message' => 'Product not found',
                 'data' => null
             ], 404);
-        }else{
+        } else {
             $product = DB::table('products')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
                 ->select('products.*', 'categories.name as category_name')
@@ -59,7 +73,7 @@ class ProductController extends Controller
                 'message' => 'Product not found',
                 'data' => null
             ], 404);
-        }else{
+        } else {
             $product = DB::table('products')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
                 ->select('products.*', 'categories.name as category_name')
@@ -151,7 +165,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product ,$id)
+    public function update(Request $request, Product $product, $id)
     {
         $validate = Validator::make($request->all(), [
             'name' => 'required|string',
@@ -204,7 +218,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product ,$id)
+    public function destroy(Product $product, $id)
     {
         if (!$id) {
             return response()->json([

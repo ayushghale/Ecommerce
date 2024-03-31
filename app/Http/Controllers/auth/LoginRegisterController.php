@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class LoginRegisterController extends Controller
 {
+
+    /**
+     * Login
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -40,10 +45,9 @@ class LoginRegisterController extends Controller
 
                     return response()->json([
                         'success' => true,
-                        'message' => 'User dashboard loged in',
+                        'message' => 'Admin loged in',
                         'data' => $UserData,
                         'token' => $token,
-                        'session' => session()->get('adminLogedIn')
                     ], 200);
                 } else {
                     return response()->json([
@@ -57,10 +61,9 @@ class LoginRegisterController extends Controller
                     $token = $UserData->createToken('authToken', $UserData->id);
                     return response()->json([
                         'success' => true,
-                        'message' => 'User dashboard loged in',
+                        'message' => 'User loged in',
                         'data' => $UserData,
                         'token' => $token,
-                        'session' => session()->get('user')
                     ], 200);
                 } else {
                     return response()->json([
@@ -83,6 +86,9 @@ class LoginRegisterController extends Controller
         }
     }
 
+    /**
+     * Register
+     */
     public function Register(Request $request)
     {
         $validate = Validator::make($request->all(), [
@@ -118,6 +124,9 @@ class LoginRegisterController extends Controller
     }
 
 
+    /**
+     * Logout
+     */
     public function logout(User $user, int $id)
     {
         if (!$user->find($id)) {
@@ -140,6 +149,50 @@ class LoginRegisterController extends Controller
                     'message' => 'User not logout',
                 ]);
             }
+        }
+    }
+
+
+    /**
+     * send otp
+     */
+    public function emailVerification($email)
+    {
+        $validator = Validator::make(
+            ['email' => $email],
+            ['email' => 'required|email|exists:users,email']
+        );
+
+        if ($validator->fails()) {
+            // Return JSON response with errors and HTTP status code 422 (Unprocessable Entity)
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        if ($email) {
+            $otpCode = rand(1000, 9999);
+            $data = [
+                'otpCode' => $otpCode,
+                'email' => $email,
+                'name' => 'akash',
+
+            ];
+
+            // Send OTP to user email
+            Mail::send('email.emailVerify', $data, function ($message) use ($data) {
+                $message->to($data['email']);
+                $message->from(env('MAIL_USERNAME'));
+                $message->subject('Email Verification Code');   // email subject
+            });
+
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ]);
         }
     }
 
