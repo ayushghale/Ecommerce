@@ -90,11 +90,16 @@ Route::prefix('product')->group(function () {
     Route::post('/create', [ProductController::class, 'store'])->name('product.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [ProductController::class, 'update'])->name('product.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [ProductController::class, 'destroy'])->name('product.destroy'); // Remove the specified resource from storage
+
+    // after
+    // Route::get('/detail/{id}', [ProductController::class, 'showProductById'])->name('product.showProductById'); // Display product by their id
+    // Route::get('/{id}', [ProductController::class, 'showProductByCategoryId'])->name('product.showProductByCategoryId'); // Display productcategory by their category id
+
+
     Route::get('/{id}', [ProductController::class, 'showProductById'])->name('product.showProductById'); // Display product by their id
-
-
     Route::get('/category/{id}', [ProductController::class, 'showProductByCategoryId'])->name('product.showProductByCategoryId'); // Display product by category id
 });
+
 
 // Order routes
 Route::prefix('order')->group(function () {
@@ -105,6 +110,7 @@ Route::prefix('order')->group(function () {
 
     Route::get('/user/{id}', [OrderController::class, 'showOrderByUserId'])->name('order.showOrderByUserId'); // Display order by user id
 });
+// e.need@gmail.com
 
 // Cart routes
 Route::prefix('cart')->group(function () {

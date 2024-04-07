@@ -67,7 +67,6 @@ class CartController extends Controller
                 'product_data' => $productData,
                 'total_price' => $total_price
             ];
-            dd($data);
             return response()->json([
                 'success' => true,
                 'message' => 'Cart found',

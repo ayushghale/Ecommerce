@@ -19,7 +19,6 @@
     <p>Thank you for your business!</p>
 
     <p>With best regards,</p>
-    <p>Customer Service Department,</p>
 </body>
 
 </html>

@@ -71,27 +71,43 @@ class OrderController extends Controller
     {
         $order = DB::table('orders')
             ->join('users', 'orders.user_id', '=', 'users.id')
-            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
-            ->join('products', 'order_details.product_id', '=', 'products.id')
-            ->select('orders.*', 'users.name as user_name', 'products.name as product_name',  'order_details.quantity')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->select(
+                'orders.*',
+                'users.name as user_name',
+                'users.email as user_email',
+                'users.contact_number as users_contact_number',
+                'payments.payment_method'
+            )
             ->where('orders.user_id', $id)
             ->get();
 
 
-        $data = [];
-        $productData = [];
 
+        $data = [];
         foreach ($order as $item) {
-            $productData[] = [
-                'product_name' => $item->product_name,
-                'quantity' => $item->quantity
-            ];
-            $data = [
+            $orderDetails = DB::table('order_details')
+                ->join('products', 'order_details.product_id', '=', 'products.id')
+                ->select(
+                    'order_details.id as order_detail_id',
+                    'order_details.quantity as order_detail_quantity',
+                    'products.name as product_name',
+                    'products.price as product_price',
+                    DB::raw('order_details.quantity * products.price as total_price')
+                )
+                ->where('order_details.order_id', $item->id)
+                ->get();
+
+
+
+            $data[] = [
                 'order_id' => $item->id,
-                'user_name' => $item->user_name,
+                'user_id' => $item->user_id,
+                'user_contact_number' => $item->users_contact_number,
                 'total' => $item->total,
-                'order_date' => $item->created_at,
-                'products' => $productData
+                'payment_method' => $item->payment_method,
+                'created_at' => $item->created_at,
+                'order_details' => $orderDetails
             ];
         }
         return response()->json([
@@ -151,14 +167,14 @@ class OrderController extends Controller
             $order->save();
 
             // Call the store method of OrderDetailController
-            $orderDetailMessage = OrderDetailController::store($request->user_id, $order->id, $token,);
+            $orderDetailMessage = OrderDetailController::store($request->user_id, $order->id, $token, );
             if ($orderDetailMessage->getStatusCode() != 200) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Order details not created',
                 ], 400);
             }
-            $paymentMessage = PaymentController::store($order->id,$request->user_id, $request->payment_method, $total);
+            $paymentMessage = PaymentController::store($order->id, $request->user_id, $request->payment_method, $total);
 
             if ($paymentMessage->getStatusCode() != 200) {
                 return response()->json([
