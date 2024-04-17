@@ -183,6 +183,11 @@ class OrderController extends Controller
                 ], 400);
             }
 
+            // Delete the cart data
+            Cart::where('user_id', $request->user_id)->delete();
+            
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Order created',

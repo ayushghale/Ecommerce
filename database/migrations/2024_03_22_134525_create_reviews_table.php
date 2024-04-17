@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('product_id') -> references('id') -> on('products');
-            $table->string('user_id') -> references('id') -> on('users');
+            $table->foreignId('product_id');
+            $table->foreignId('user_id') ;
             $table->integer('rating');
             $table->string('review');
             $table->string('description')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
+
+            $table->foreign('product_id')->references('id')->on('products');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

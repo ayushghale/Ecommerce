@@ -1,0 +1,134 @@
+:root {
+    --color1: #75b4f7;
+}
+.error{
+    color: red;
+}
+
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: var(--color1);
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    right: 10%;
+    top: 30px;
+    font-size: 17px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+
+.snackbar {
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: var(--color1);
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    font-size: 17px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    top: 85px;
+    right: 10px;
+    background-color: var(--color1) !important;
+    color: white;
+    padding: 15px;
+    animation: fadeOut 2s linear forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+
+button.accept-user {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: rgb(42, 173, 42);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+
+}
+button.deny-user {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: rgb(255, 213, 0);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+}
+
+button.delete-user {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+}
+button.edit-user {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: var(--color1);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+}
+button.assign-task {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: var(--color1);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+}

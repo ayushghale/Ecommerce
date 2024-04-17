@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id') -> references('id') -> on('orders');
-            $table->string('user_id') -> references('id') -> on('users');
+            $table->foreignId('order_id');
+            $table->foreignId('user_id');
             $table->string('payment_method');
             $table->double('payment_amount');
             $table->string('transactionCode')->nullable();
             $table->string('payment_status') -> default('pending');
             $table->timestamps();
+
+            $table->foreign('order_id')->references('id')->on('orders');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

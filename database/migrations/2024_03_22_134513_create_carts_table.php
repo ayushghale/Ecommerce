@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id') -> references('id') -> on('users');
-            $table->string('product_id') -> references('id') -> on('products');
+            $table->foreignId('user_id');
+            $table->foreignId('product_id') ;
             $table->string('quantity');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('product_id')->references('id')->on('products');
         });
     }
 

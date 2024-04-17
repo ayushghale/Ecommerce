@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('order_details', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id') -> references('id') -> on('orders');
-            $table->string('product_id') -> references('id') -> on('products');
+            $table->foreignId('order_id') ;
+            $table->foreignId('product_id');
             $table->integer('quantity');
             $table->double('total');
             $table->string('uCode'); // unique code
             $table->string('status') -> default('pending');
             $table->timestamps();
+
+            $table->foreign('order_id')->references('id')->on('orders');
+            $table->foreign('product_id')->references('id')->on('products');
         });
     }
 

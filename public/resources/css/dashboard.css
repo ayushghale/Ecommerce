@@ -1,0 +1,337 @@
+/*  import google fonts */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
+* {
+
+    outline: none;
+    border: none;
+    text-decoration: none;
+
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: #dfe9f5;
+}
+
+.admin-container {
+    display: flex;
+}
+
+.admin-dashboard-nav {
+    position: sticky;
+
+    top: 0;
+    bottom: 0;
+    height: 100vh;
+    left: 0;
+    background: #fff;
+    width: 400px;
+    overflow: hidden;
+
+}
+
+.logo {
+
+    display: flex;
+    margin: 20px 0 0 20px;
+}
+
+.logo img {
+
+    height: 45px;
+
+}
+
+.admin-dashboard-nav a {
+    position: relative;
+    color: rgb(85, 83, 83);
+    font-size: 13px;
+    display: table;
+    width: 100%;
+    padding: 8px;
+    padding-left: 20px;
+    /* margin-top: 20px; */
+}
+
+
+
+.admin-dashboard-nav .fas,
+.fa-solid {
+    position: relative;
+
+    height: 40px;
+    top: 14px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.nav-item {
+    position: relative;
+    top: 12px;
+    margin-left: 10px;
+}
+
+.das-active {
+    background: #dfe9f5;
+
+}
+
+.admin-dashboard-nav li:hover {
+    background: #dfe9f5;
+
+}
+
+.logout {
+    position: absolute;
+    bottom: 0;
+}
+
+/* Main Section */
+.main {
+    position: relative;
+    padding: 10px;
+
+
+}
+
+.main-top {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background: #fff;
+
+}
+
+.main-top i {
+    top: 0px;
+}
+
+.dashboard-container {
+    margin-top: 10px;
+    background: #fff;
+
+    border-radius: 5px;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+}
+
+.admin-input-container {
+    width: 100%;
+    padding: 20px;
+}
+
+.admin-input-container input {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 15px;
+    width: 100%;
+    border: 1px solid var(--color5);
+}
+
+.admin-input-container select {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 15px;
+    width: 100%;
+    border: 1px solid var(--color5);
+    background-color: white;
+    cursor: pointer;
+}
+
+.add-input-container {
+    width: 31.9%;
+}
+
+.whole-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 20px;
+}
+
+.product-desc textarea {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 15px;
+    width: 100%;
+    border: 1px solid var(--color5);
+    height: 180px;
+}
+
+.product-desc {
+    width: 100%;
+}
+
+button.add-items {
+    padding: 10px;
+    margin-top: 15px;
+    background-color: var(--color1);
+    color: white;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+button.add-items:hover {
+    background-color: var(--color2);
+}
+
+.table-heading-dashboard {
+    background-color: var(--color1);
+
+}
+
+.table-heading-dashboard th {
+    color: white !important;
+}
+
+/* button.accept-user {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: rgb(42, 173, 42);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+} */
+
+button.accepted-user {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: rgb(42, 173, 42);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+}
+
+button.edit-user {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: var(--color1);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+}
+
+
+button.denied-user {
+    padding: 8px;
+    font-size: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 500;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    width: 100%;
+
+}
+
+
+.fa-chevron-down {
+    font-size: 13px;
+    position: absolute;
+    right: 22px;
+    top: 22px;
+    cursor: pointer;
+}
+
+.admin-dashboard-nav ul li {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+
+    top: -5px;
+}
+
+.drop-down-items {
+    padding-left: 20px;
+    display: none;
+    background-color: white;
+}
+
+.drop-down-items a {
+    color: var(--color4) !important;
+}
+
+.parent {
+    overflow: hidden;
+}
+
+.show {
+    display: block !important;
+}
+
+
+
+.drop-down-items li {
+    list-style: none;
+}
+
+.search-inputs {
+    display: inline-flex;
+}
+
+.search-container {
+    width: 60%;
+}
+
+.date-container {
+    width: 35%;
+    margin-left: 40px;
+}
+
+
+.assign-search input {
+    margin-top: 10px;
+    padding: 11px;
+    font-size: 15px;
+    width: 35%;
+    border: 1px solid var(--color5);
+}
+
+@media only screen and (min-width: 1600px) {
+    .main {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .admin-dashboard-nav {
+        width: 300px;
+    }
+
+    .admin-dashboard-nav a {
+        font-size: 14px;
+    }
+
+    button.accept-user {
+        width: auto;
+    }
+
+    button.deny-user {
+        width: auto;
+    }
+}

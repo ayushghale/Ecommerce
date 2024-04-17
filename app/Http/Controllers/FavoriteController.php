@@ -16,9 +16,6 @@ class FavoriteController extends Controller
             ->where('favorites.user_id', $id)
             ->get();
 
-        if ($favorites->isEmpty()) {
-            return response()->json(['message' => 'No favorites found'], 404);
-        }
         return response()->json($favorites, 200);
     }
 
