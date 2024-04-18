@@ -37,11 +37,17 @@ Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Re
 
 Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('logout'); // Logout
 
+
+
 // Route::middleware([UserTokenIsValid::class])->group(function () {
 //     Route::get('/alluser', [UserController::class, 'userData'])->name('user.index'); // Display all users
 // });
 
 
+
+Route::post('/verifyOtp', [LoginRegisterController::class, 'verifyOtp'])->name('verifyOtp'); // Token
+
+Route::post('/forgotPassword', [LoginRegisterController::class, 'forgotPassword'])->name('forgotPassword'); // Forgot Password
 
 
 
@@ -90,6 +96,8 @@ Route::prefix('product')->group(function () {
     Route::post('/create', [ProductController::class, 'store'])->name('product.create'); // Store a newly created resource in storage
     Route::post('/update/{id}', [ProductController::class, 'update'])->name('product.update'); // Update the specified resource in storage
     Route::get('/delete/{id}', [ProductController::class, 'destroy'])->name('product.destroy'); // Remove the specified resource from storage
+
+    Route::get('/search/{name}', [ProductController::class, 'searchProductByName'])->name('product.searchProductByName'); // Display product by their name
 
     // after
     // Route::get('/detail/{id}', [ProductController::class, 'showProductById'])->name('product.showProductById'); // Display product by their id

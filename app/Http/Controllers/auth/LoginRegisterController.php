@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Otp_verification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -116,6 +117,9 @@ class LoginRegisterController extends Controller
         $user->contact_number = $request->contact_number;
         $user->save();
 
+        // call email verification
+        $this->emailVerification($request->email);
+
         return response()->json([
             'success' => true,
             'message' => 'User created successfully',
@@ -181,12 +185,34 @@ class LoginRegisterController extends Controller
 
             ];
 
+            $existOtp = Otp_verification::where('email', $email)->where('type', 'emailVerification')->first();
+
+            if ($existOtp) {
+                $existOtp->delete();
+            }
+
+            // Store OTP in database
+            $otpData = new Otp_verification();
+            $otpData->email = $email;
+            $otpData->otp = $otpCode;
+            $otpData->type = 'emailVerification';
+            $otpData->save();
+
+
             // Send OTP to user email
             Mail::send('email.emailVerify', $data, function ($message) use ($data) {
                 $message->to($data['email']);
                 $message->from(env('MAIL_USERNAME'));
                 $message->subject('Email Verification Code');   // email subject
             });
+
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent successfully',
+                'otp' => $otpCode,
+            ]);
 
         } else {
             return response()->json([
@@ -196,4 +222,161 @@ class LoginRegisterController extends Controller
         }
     }
 
+    /**
+     * forgot password
+     */
+    public function forgotPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            // Return JSON response with errors and HTTP status code 422 (Unprocessable Entity)
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $email = $request->email;
+
+        $userData = User::where('email', $email)->first();
+
+        if ($userData) {
+            $otpCode = rand(1000, 9999);
+            $data = [
+                'otpCode' => $otpCode,
+                'email' => $email,
+                'name' => $userData->name,
+            ];
+
+            $existOtp = Otp_verification::where('email', $email)->where('type', 'forgotPassword')->first();
+
+            if ($existOtp) {
+                $existOtp->delete();
+            }
+
+            // Store OTP in database
+            $otpData = new Otp_verification();
+            $otpData->email = $email;
+            $otpData->otp = $otpCode;
+            $otpData->type = 'forgotPassword';
+            $otpData->save();
+
+            // Send OTP to user email
+            Mail::send('email.forgotPassword', $data, function ($message) use ($data) {
+                $message->to($data['email']);
+                $message->from(env('MAIL_USERNAME'));
+                $message->subject('Forgot Password Code');   // email subject
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent successfully',
+                'otp' => $otpCode,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ]);
+        }
+    }
+
+    /**
+     * reset password
+     */
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|numeric',
+            'password' => 'required|same:conform_password',
+            'conform_password' => 'required|same:password',
+        ]);
+
+        if ($validator->fails()) {
+            // Return JSON response with errors and HTTP status code 422 (Unprocessable Entity)
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $otp = $request->otp;
+        $email = $request->email;
+        $password = $request->password;
+
+        $otpData = Otp_verification::where('email', $email)->where('type', 'forgotPassword')->where('otp', $otp)->first();
+
+        if ($otpData) {
+            $userData = User::where('email', $email)->first();
+            $userData->password = Hash::make($password);
+            $userData->save();
+
+            $otpData->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Password reset successfully',
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid OTP',
+            ]);
+        }
+    }
+
+    /**
+     * vaerify otp
+     */
+    public function verifyOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|numeric',
+            'type' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            // Return JSON response with errors and HTTP status code 422 (Unprocessable Entity)
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $otp = $request->otp;
+        $email = $request->email;
+        $type = $request->type;
+
+        $otpData = Otp_verification::where('email', $email)->where('type',$type )->where('otp', $otp)->first();
+
+        if ($otpData) {
+
+            if ($type === 'emailVerification') {
+                $userData = User::where('email', $email)->first();
+                $userData->email_verified_at = date('Y-m-d H:i:s');
+                $userData->save();
+                
+                $otpData->delete();
+            }
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP verified successfully',
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid OTP',
+            ]);
+        }
+    }
 }
