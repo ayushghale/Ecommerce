@@ -37,6 +37,9 @@ Route::post('/register', [LoginRegisterController::class, 'Register'])->name('Re
 
 Route::post('/logout/{id}', [LoginRegisterController::class, 'logout'])->name('logout'); // Logout
 
+// resend otp
+Route::post('/resendOtp', [LoginRegisterController::class, 'resendOtp'])->name('resendOtp'); // Resend OTP
+
 
 
 // Route::middleware([UserTokenIsValid::class])->group(function () {

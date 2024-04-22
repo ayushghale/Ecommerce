@@ -37,6 +37,13 @@ class LoginRegisterController extends Controller
                 ], 404);
             }
 
+            if (!$UserData->email_verified_at) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User email not verified',
+                ], 401);
+            }
+
             if ($UserData->role === 1) {
                 // dd('admin');
                 if (Hash::check($request->password, $UserData->password)) {
@@ -223,6 +230,71 @@ class LoginRegisterController extends Controller
     }
 
     /**
+     * resend otp
+     */
+    public function resendOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+            'type' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            // Return JSON response with errors and HTTP status code 422 (Unprocessable Entity)
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $email = $request->email;
+        $type = $request->type;
+
+        $userData = User::where('email', $email)->first();
+
+        if ($userData) {
+            $otpCode = rand(1000, 9999);
+            $data = [
+                'otpCode' => $otpCode,
+                'email' => $email,
+                'name' => $userData->name,
+            ];
+
+            $existOtp = Otp_verification::where('email', $email)->where('type', $type)->first();
+
+            if ($existOtp) {
+                $existOtp->delete();
+            }
+
+            // Store OTP in database
+            $otpData = new Otp_verification();
+            $otpData->email = $email;
+            $otpData->otp = $otpCode;
+            $otpData->type = $type;
+            $otpData->save();
+
+            // Send OTP to user email
+            Mail::send('email.emailVerify', $data, function ($message) use ($data) {
+                $message->to($data['email']);
+                $message->from(env('MAIL_USERNAME'));
+                $message->subject('Email Verification Code');   // email subject
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent successfully',
+                'otp' => $otpCode,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ]);
+        }
+    }
+
+    /**
      * forgot password
      */
     public function forgotPassword(Request $request)
@@ -363,7 +435,7 @@ class LoginRegisterController extends Controller
                 $userData = User::where('email', $email)->first();
                 $userData->email_verified_at = date('Y-m-d H:i:s');
                 $userData->save();
-                
+
                 $otpData->delete();
             }
 

@@ -35,7 +35,7 @@ class CartController extends Controller
                 'message' => 'Cart not found',
                 'data' => null
             ], 404);
-        }else{
+        } else {
             $cart = DB::table('carts')
                 ->join('products', 'carts.product_id', '=', 'products.id')
                 ->join('users', 'carts.user_id', '=', 'users.id')
@@ -78,25 +78,35 @@ class CartController extends Controller
     /**
      * Show cart data by their id.
      */
-    public function showCartById($id){
+    public function showCartById($id)
+    {
         if (Cart::where('id', $id)->doesntExist()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cart not found',
                 'data' => null
             ], 404);
-        }else{
+        } else {
             $cart = DB::table('carts')
                 ->join('products', 'carts.product_id', '=', 'products.id')
                 ->join('users', 'carts.user_id', '=', 'users.id')
                 ->select('carts.*', 'products.name as product_name', 'users.name as user_name')
                 ->where('carts.id', $id)
                 ->get();
-            return response()->json([
-                'success' => true,
-                'message' => 'Cart found',
-                'data' => $cart
-            ], 200);
+
+            if ($cart->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Cart not found',
+                    'data' => [] // Empty array
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Cart found',
+                    'data' => $cart
+                ], 200);
+            }     
         }
     }
 
@@ -135,7 +145,7 @@ class CartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cart $cart , $id)
+    public function update(Request $request, Cart $cart, $id)
     {
         $validate = Validator::make($request->all(), [
             'user_id' => 'required | integer | exists:users,id',
@@ -173,7 +183,7 @@ class CartController extends Controller
                 'message' => 'Cart not found',
                 'data' => null
             ], 404);
-        }else{
+        } else {
             $cart = Cart::find($id);
             $cart->delete();
             return response()->json([
@@ -216,7 +226,7 @@ class CartController extends Controller
         if (!$cart || $cart->quantity <= 1) {
             return response()->json([
                 'success' => false,
-                'message' =>'Cart not found',
+                'message' => 'Cart not found',
                 'data' => null
             ], 404);
         }
