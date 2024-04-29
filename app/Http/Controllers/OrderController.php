@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use Validator;
-use App\Helper\TokenService;
 use Illuminate\Support\Str;
 use DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -135,13 +136,28 @@ class OrderController extends Controller
             ], 422);
         }
 
+        // Check inventory stock
+        $checkStock = $this->checkInventoryStock($request->user_id);
+
+        if ($checkStock->getStatusCode() != 200) {
+            return ;
+        }
+
+
         try {
             $token = $this->generateToken("order"); // Generate a unique token
             // Get all cart data for the user
             $cartData = DB::table('carts')
                 ->join('products', 'carts.product_id', '=', 'products.id')
                 ->join('users', 'carts.user_id', '=', 'users.id')
-                ->select('carts.*', 'products.price as product_price', 'users.name as user_name')
+                ->select(
+                    'carts.*',
+                    'products.price as product_price',
+                    'users.name as user_name',
+                    'products.image as product_image',
+                    'users.email as email',
+                    'products.name as product_name'
+                )
                 ->where('carts.user_id', $request->user_id)
                 ->get();
 
@@ -183,10 +199,16 @@ class OrderController extends Controller
                 ], 400);
             }
 
-            // Delete the cart data
             Cart::where('user_id', $request->user_id)->delete();
-            
+            $mailData = [
+                'name' => $cartData[0]->user_name,
+                'total' => $total,
+                'order_id' => $order->id,
+                'order_details' => $cartData,
+                'payment_method' => $request->payment_method,
+            ];
 
+            $this->sendOrderMail($mailData, $email = $cartData[0]->email);
 
             return response()->json([
                 'success' => true,
@@ -203,13 +225,46 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * check inventory stock
+     */
+    public function checkInventoryStock($userId)
+    {
+        $cartData = DB::table('carts')
+            ->join('products', 'carts.product_id', '=', 'products.id')
+            ->where('carts.user_id', $userId)
+            ->select('carts.*', 'products.name')
+            ->get();
+
+        foreach ($cartData as $cart) {
+            $inventoryStock = Inventory::where('product_id', $cart->product_id)->first();
+
+            if (intval($cart->quantity) > $inventoryStock->stock) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "$cart->name  are out of stock or quantity is more than stock"
+                ], 400);
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'All products are in stock',
+        ], 200);
+    }
+
+
+
 
     /**
-     * Display the specified resource.
+     *send order mail
      */
-    public function show(Order $order)
+    public function sendOrderMail($mailData, $email)
     {
-        //
+        Mail::send('email.orderMail', compact('mailData'), function ($message) use ($mailData, $email) {
+            $message->to($email);
+            $message->from(env('MAIL_USERNAME'));
+            $message->subject('Order Confirmation');
+        });
     }
 
 

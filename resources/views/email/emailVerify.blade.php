@@ -11,7 +11,7 @@
         To verify your email address, please enter the following code in the verification page:
     </p>
 
-    <b>{{ $otpCode }}</b>
+    <b>{{ $otpCode }}</b> 
 
     <p>It is important that we have your correct e-mail address on our records for us to send you important notices,
         This process will ensure just that.</p>

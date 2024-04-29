@@ -91,6 +91,12 @@
                         <span>Display Product</span>
                     </a>
                 </li>
+                <li class="{{ $currentPage === 'inventoryProduct' ? 'active-nav' : '' }}">
+                    <a href="/admin/products/inventory" class="{{ $currentPage === 'inventoryProduct' ? 'active-a' : '' }}">
+
+                        <span>Product Inventory</span>
+                    </a>
+                </li>
 
             </ul>
         </li>

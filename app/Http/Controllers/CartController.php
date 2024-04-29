@@ -106,7 +106,7 @@ class CartController extends Controller
                     'message' => 'Cart found',
                     'data' => $cart
                 ], 200);
-            }     
+            }
         }
     }
 
@@ -189,7 +189,6 @@ class CartController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Cart deleted',
-                'data' => $cart
             ], 200);
         }
     }

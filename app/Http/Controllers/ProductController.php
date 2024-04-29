@@ -17,19 +17,22 @@ class ProductController extends Controller
     {
         $userId = 0;
 
-        if($userId == null){
+        if ($userId == null) {
             $products = DB::table('products')
+                ->leftJoin('inventories', 'products.id', '=', 'inventories.product_id')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->select('products.*', 'categories.name as category_name')
+                ->select('products.*', 'categories.name as category_name', 'inventories.stock')
                 ->get();
-        }else{
+
+        } else {
             $products = DB::table('products')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
                 ->leftJoin('favorites', function ($join) use ($userId) {
                     $join->on('products.id', '=', 'favorites.product_id')
                         ->where('favorites.user_id', '=', $userId);
                 })
-                ->select('products.*', 'categories.name as category_name', 'favorites.user_id as favorite_user_id')
+                ->leftJoin('inventories', 'products.id', '=', 'inventories.product_id')
+                ->select('products.*', 'categories.name as category_name', 'favorites.user_id as favorite_user_id','inventories.stock')
                 ->get();
         }
         return response()->json([
@@ -50,8 +53,9 @@ class ProductController extends Controller
             ], 404);
         } else {
             $product = DB::table('products')
+                ->leftJoin('inventories', 'products.id', '=', 'inventories.product_id')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->select('products.*', 'categories.name as category_name')
+                ->select('products.*', 'categories.name as category_name','inventories.stock')
                 ->where('products.category_id', $id)
                 ->get();
             return response()->json([
@@ -72,8 +76,9 @@ class ProductController extends Controller
             ], 404);
         } else {
             $product = DB::table('products')
+                ->leftJoin('inventories', 'products.id', '=', 'inventories.product_id')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->select('products.*', 'categories.name as category_name')
+                ->select('products.*', 'categories.name as category_name','inventories.stock')
                 ->where('products.name', 'like', '%' . $name . '%')
                 ->get();
             return response()->json([
@@ -97,8 +102,9 @@ class ProductController extends Controller
             ], 404);
         } else {
             $product = DB::table('products')
+                ->leftJoin('inventories', 'products.id', '=', 'inventories.product_id')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->select('products.*', 'categories.name as category_name')
+                ->select('products.*', 'categories.name as category_name','inventories.stock')
                 ->where('products.id', $id)
                 ->get();
             return response()->json([
@@ -109,13 +115,7 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.

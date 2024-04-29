@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Inventory;
 use App\Models\OrderDetail;
 use Illuminate\Http\Request;
 use DB;
@@ -45,7 +46,11 @@ class OrderDetailController extends Controller
                 $orderDetail->total = $total_Price; // Use the calculated total price
                 $orderDetail->uCode = $uCode;
                 $orderDetail->save();
-                // dd($orderDetail); // Debug if needed
+
+                // decrement product stock from invrntory
+                $Productstock = Inventory::where('product_id', $product_id)->first();
+                $Productstock->stock = $Productstock->stock - $quantity;
+                $Productstock->save();
             }
 
 

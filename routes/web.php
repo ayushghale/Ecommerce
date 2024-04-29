@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\InventoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,8 +64,12 @@ Route::prefix('admin')->middleware("admin.auth")->group(function () {
     Route::post('/products/store', [ProductController::class, 'storeProduct'])->name('admin.products.store'); // store product
     Route::post('/products/update/{id}', [ProductController::class, 'updateProduct'])->name('admin.products.update'); // update product
     Route::get('/products/delete/{id}', [ProductController::class, 'deleteProduct'])->name('admin.products.delete'); // delete product
-
-
+    // product invnetory
+    Route::get('/products/inventory', [InventoryController::class, 'productInventory'])->name('admin.products.inventory'); // product inventory
+    Route::get('/products/inventory/edit/{id}', [InventoryController::class, 'editInventory'])->name('admin.products.inventory.edit'); //edit product inventory
+    Route::post('/products/inventory/update/{id}', [InventoryController::class, 'updateInventory'])->name('admin.products.inventory.update'); // update product inventory
+    Route::get('/products/inventory/delete/{id}', [InventoryController::class, 'deleteInventory'])->name('admin.products.inventory.delete'); // delete product inventory
+    
     // Orders
     Route::get('/orders/new', [OrderController::class, 'newOrder'])->name('admin.orders.new'); // new order
     Route::get('/orders/completed', [OrderController::class, 'completedOrder'])->name('admin.orders.completed'); // completed order

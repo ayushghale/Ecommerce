@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Inventory;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,8 @@ class ProductController extends Controller
     public function displayProduct()
     {
         $products = Product::join('categories', 'products.category_id', '=', 'categories.id')
-            ->select('products.*', 'categories.name as category_name')
+            ->leftJoin('inventories', 'products.id', '=', 'inventories.product_id')
+            ->select('products.*', 'categories.name as category_name','inventories.quantity as stock')
             ->get();
 
         return view('admin.product.displayProduct', compact('products'));
@@ -24,6 +26,8 @@ class ProductController extends Controller
 
         return view('admin.product.addProduct', compact('categories'));
     }
+
+
 
     public function editProduct($id)
     {
@@ -40,11 +44,12 @@ class ProductController extends Controller
     public function storeProduct(Request $request)
     {
         $request->validate([
-            'name' => 'required || unique:products',
+            'name' => 'required ',
             'price' => 'required',
             'category_id' => 'required',
             'description' => 'required',
             'image' => 'required || mimes:jpeg,png,jpg || max:2048',
+            'stock' => 'required || integer || min:1',
         ]);
 
         try {
@@ -58,7 +63,6 @@ class ProductController extends Controller
             $product->name = $request->name;
             $product->price = $request->price;
             $product->category_id = $request->category_id;
-
             $image = $request->file('image');
 
             if ($image) {
@@ -68,15 +72,21 @@ class ProductController extends Controller
             }
             $product->image = $save_url;
             $product->description = $request->description;
-
             $product->save();
+
+            //  add inventory
+            $inventory = new Inventory();
+            $inventory->product_id = $product->id;
+            $inventory->stock = intval($request->stock);
+            $inventory->save();
+
 
             return redirect()->route('admin.products.add')
                 ->with('success', 'Product added successfully.');
 
         } catch (\Exception $e) {
             return redirect()->route('admin.products.add')
-                ->with('error', 'Something went wrong.');
+                ->with('error', $e->getMessage());
         }
     }
 

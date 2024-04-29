@@ -72,6 +72,19 @@ $currentNav = 'product';
                                 </div>
                             @enderror
                         </div>
+                        <div class="add-input-container">
+                            <div class="profile-label">
+                                <label for="">Stock quantity</label>
+                            </div>
+                            <input type="number" placeholder="Enter stock quantity" name="stock" min="1"
+                                style="width: 100%; padding: 10px; border: 1px solid black; margin-top: 10px">
+
+                            @error('stock')
+                                <div class="error" role="alert">
+                                    <span class="text-danger">{{ $message }}</span>
+                                </div>
+                            @enderror
+                        </div>
                     </div>
                     <div style="margin-right: 20px; ">
                         <div class="profile-label" style=" margin:10px 0">
@@ -88,7 +101,7 @@ $currentNav = 'product';
                     </div>
 
                     <button class="add-items">
-                        Add Category
+                        Add Product
                     </button>
                 </form>
             </div>
