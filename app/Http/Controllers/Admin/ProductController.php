@@ -19,8 +19,6 @@ class ProductController extends Controller
             ->select('products.*', 'categories.name as category_name')
             ->get();
 
-        dd($products);
-
         return view('admin.product.displayProduct', compact('products'));
     }
 
