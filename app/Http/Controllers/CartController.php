@@ -56,6 +56,7 @@ class CartController extends Controller
                     'category_name' => $item->category_name,
                     'product_id' => $item->product_id,
                     'product_name' => $item->product_name,
+                    'product_image' => $item->product_image,
                     'quantity' => $item->quantity,
                     'price' => $item->price,
                     'total_price' => $item->price * $item->quantity
