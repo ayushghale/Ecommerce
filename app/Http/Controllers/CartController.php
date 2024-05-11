@@ -34,7 +34,7 @@ class CartController extends Controller
                 'success' => false,
                 'message' => 'Cart not found',
                 'data' => null
-            ], 404);
+            ], 200);
         } else {
             $cart = DB::table('carts')
                 ->join('products', 'carts.product_id', '=', 'products.id')
