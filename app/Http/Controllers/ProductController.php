@@ -23,7 +23,7 @@ class ProductController extends Controller
                 ->join('categories', 'products.category_id', '=', 'categories.id')
                 ->select('products.*', 'categories.name as category_name', 'inventories.stock')
                 ->get();
-                dd($products);
+                
 
         } else {
             $products = DB::table('products')
