@@ -94,6 +94,7 @@ class OrderController extends Controller
                     'order_details.quantity as order_detail_quantity',
                     'products.name as product_name',
                     'products.price as product_price',
+                    'products.image as product_image',
                     DB::raw('order_details.quantity * products.price as total_price')
                 )
                 ->where('order_details.order_id', $item->id)

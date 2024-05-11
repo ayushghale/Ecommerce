@@ -40,7 +40,7 @@ class CartController extends Controller
                 ->join('products', 'carts.product_id', '=', 'products.id')
                 ->join('users', 'carts.user_id', '=', 'users.id')
                 ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->select('carts.*', 'products.name as product_name', 'users.name as user_name', 'products.price', 'categories.name as category_name')
+                ->select('carts.*', 'products.name as product_name', 'users.name as user_name', 'products.price', 'products.image as product_image', 'categories.name as category_name')
                 ->where('carts.user_id', $id)
                 ->get();
 

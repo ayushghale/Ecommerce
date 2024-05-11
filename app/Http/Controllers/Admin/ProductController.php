@@ -7,15 +7,19 @@ use App\Models\Category;
 use App\Models\Inventory;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use DB;
 
 class ProductController extends Controller
 {
     public function displayProduct()
     {
+        // dd('here');
         $products = Product::join('categories', 'products.category_id', '=', 'categories.id')
-            ->leftJoin('inventories', 'products.id', '=', 'inventories.product_id')
-            ->select('products.*', 'categories.name as category_name','inventories.quantity as stock')
+            ->join('inventories', 'products.id', '=', 'inventories.product_id')
+            ->select('products.*', 'categories.name as category_name')
             ->get();
+
+        dd($products);
 
         return view('admin.product.displayProduct', compact('products'));
     }
